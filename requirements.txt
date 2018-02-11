@@ -1,5 +1,5 @@
 numpy==1.13.1
 pandas==0.20.2
-telebot
+pytelegrambotapi
 googlemaps==2.5.1
 flask==0.12
