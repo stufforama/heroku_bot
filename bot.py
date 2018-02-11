@@ -51,16 +51,6 @@ gmaps = googlemaps.Client(key=API_KEY)
 
 #инициализируем бота
 print('Running bot')
-WEBHOOK_HOST = '194.15.117.121'
-WEBHOOK_PORT = 88  # 443, 80, 88 или 8443 (порт должен быть открыт!)
-WEBHOOK_LISTEN = '0.0.0.0'  # На некоторых серверах придется указывать такой же IP, что и выше
-
-WEBHOOK_SSL_CERT = './webhook_cert.pem'  # Путь к сертификату
-WEBHOOK_SSL_PRIV = './webhook_pkey.pem'  # Путь к приватному ключу
-
-WEBHOOK_URL_BASE = "https://%s:%s" % (WEBHOOK_HOST, WEBHOOK_PORT)
-WEBHOOK_URL_PATH = "/%s/" % (config.token)
-# token = '431029921:AAEpcAygl-U9wf0Dh0mQf0hBkgi_rAxejAs'
 bot = telebot.TeleBot(config.token)
 
 server = Flask(__name__)
@@ -194,5 +184,5 @@ def webhook():
     bot.set_webhook(url="https://infinite-waters-96978.heroku.com/bot")
     return "!", 200
 
-server.run(host="0.0.0.0", port=os.environ.get('PORT', 5000))
-server = Flask(__name__)
+server.run(host="0.0.0.0", port=43)
+# server = Flask(__name__)
