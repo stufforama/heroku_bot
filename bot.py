@@ -10,11 +10,12 @@ import re
 import urllib
 import telebot
 import googlemaps
-from config import token
+# from config import token
 import os
 from flask import Flask, request
 
-
+token = os.environ.get('TOKEN')
+API_KEY = os.environ.get('API_KEY')
 
 # In[ ]:
 
@@ -46,7 +47,6 @@ manuals = {'Автоматический тонометр':'https://youtu.be/nTW
 
 #googlemaps
 print('loadind gmaps')
-API_KEY = 'AIzaSyAau5W4033f5PotzAw-DpK0DwmhHlQ1HFY'
 gmaps = googlemaps.Client(key=API_KEY)
 
 #инициализируем бота
