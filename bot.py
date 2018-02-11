@@ -185,4 +185,4 @@ def webhook():
     return "!", 200
 
 server.run(host="0.0.0.0", port=5000)
-# server = Flask(__name__)
+server = Flask(__name__)
