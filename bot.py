@@ -67,41 +67,41 @@ start_msg = 'Чем я могу помочь?'
 # global last_message
 last_message = ''
 
-@bot.message_handler(commands=['start'])
-def start(message):
-    bot.reply_to(message, 'Hello, ' + message.from_user.first_name)
+# @bot.message_handler(commands=['start'])
+# def start(message):
+#     bot.reply_to(message, 'Hello, ' + message.from_user.first_name)
 
-# def nearest_service(location):
-#     min_dist = 10000000
-#     nearest_sc = ''
-#     sc_description = ''
-#     for index in range(services.shape[0]):
-#         distance = np.sqrt((location.latitude-services.lat[index])**2 + (location.longitude-services.lng[index])**2)
-#         if distance < min_dist:
-#             min_dist = distance
-#             nearest_sc = index
-#     sc_longitude = services['lng'].loc[nearest_sc]
-#     sc_latitude = services['lat'].loc[nearest_sc]
-#     sc_description = '\n'.join(list(services[useful_cols].loc[nearest_sc]))
-#     return sc_longitude, sc_latitude, sc_description    
+def nearest_service(location):
+    min_dist = 10000000
+    nearest_sc = ''
+    sc_description = ''
+    for index in range(services.shape[0]):
+        distance = np.sqrt((location.latitude-services.lat[index])**2 + (location.longitude-services.lng[index])**2)
+        if distance < min_dist:
+            min_dist = distance
+            nearest_sc = index
+    sc_longitude = services['lng'].loc[nearest_sc]
+    sc_latitude = services['lat'].loc[nearest_sc]
+    sc_description = '\n'.join(list(services[useful_cols].loc[nearest_sc]))
+    return sc_longitude, sc_latitude, sc_description    
 
-# def manual_nearest_service(lat, lng):
-#     min_dist = 10000000
-#     nearest_sc = ''
-#     sc_description = ''
-#     for index in range(services.shape[0]):
-#         distance = np.sqrt((lat-services.lat[index])**2 + (lng-services.lng[index])**2)
-#         if distance < min_dist:
-#             min_dist = distance
-#             nearest_sc = index
-#     sc_longitude = services['lng'].loc[nearest_sc]
-#     sc_latitude = services['lat'].loc[nearest_sc]
-#     sc_description = '\n'.join(list(services[useful_cols].loc[nearest_sc]))
-#     return sc_longitude, sc_latitude, sc_description  
+def manual_nearest_service(lat, lng):
+    min_dist = 10000000
+    nearest_sc = ''
+    sc_description = ''
+    for index in range(services.shape[0]):
+        distance = np.sqrt((lat-services.lat[index])**2 + (lng-services.lng[index])**2)
+        if distance < min_dist:
+            min_dist = distance
+            nearest_sc = index
+    sc_longitude = services['lng'].loc[nearest_sc]
+    sc_latitude = services['lat'].loc[nearest_sc]
+    sc_description = '\n'.join(list(services[useful_cols].loc[nearest_sc]))
+    return sc_longitude, sc_latitude, sc_description  
 
-# @bot.message_handler(commands=["start", 'menu'])
-# def dial_start(message):
-#     bot.send_message(message.chat.id, start_msg, reply_markup = keyboard_layout)
+@bot.message_handler(commands=["start", 'menu'])
+def dial_start(message):
+    bot.send_message(message.chat.id, start_msg, reply_markup = keyboard_layout)
     
 
 # @bot.message_handler(content_types=['text', 'location'])
