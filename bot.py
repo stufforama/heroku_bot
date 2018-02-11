@@ -173,7 +173,7 @@ def response(message):
             bot.send_message(message.chat.id, geo_request, reply_markup=markup)   
             last_message = geo_request
             
-@server.route("/bot", methods=['POST'])
+@server.route("/{}".format(config.token), methods=['POST'])
 def getMessage():
     bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
     return "!", 200
