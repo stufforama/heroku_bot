@@ -10,7 +10,7 @@ import re
 import urllib
 import telebot
 import googlemaps
-import config
+from config import token
 import os
 from flask import Flask, request
 
@@ -51,7 +51,7 @@ gmaps = googlemaps.Client(key=API_KEY)
 
 #инициализируем бота
 print('Running bot')
-bot = telebot.TeleBot(config.token)
+bot = telebot.TeleBot(token)
 
 server = Flask(__name__)
 
@@ -173,16 +173,17 @@ def response(message):
             bot.send_message(message.chat.id, geo_request, reply_markup=markup)   
             last_message = geo_request
             
-@server.route("/{}".format(config.token), methods=['POST'])
-def getMessage():
+
+@server.route('/' + token, methods=['POST'])
+def get_message():
     bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
-    return "!", 200
+    return "POST", 200
+
 
 @server.route("/")
-def webhook():
+def web_hook():
     bot.remove_webhook()
-    bot.set_webhook(url="https://infinite-waters-96978.heroku.com/{}".format(config.token))
-    return "!", 200
+    bot.set_webhook(url='https://infinite-waters-96978.herokuapp.com/' + token)
+    return "CONNECTED", 200
 
-server.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
-# server = Flask(__name__)
+server.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000))
