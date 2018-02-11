@@ -1,1 +1,1 @@
-web: gunicorn bot:app
+bot: python bot.py
