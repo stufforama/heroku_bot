@@ -1,26 +1,48 @@
-# ----------------
-# dont forget 'pip install requests' first
-# ----------------
-# usage example:
-#
-# import botan
-#
-# print botan.track(1111, 1, {'text':2}, 'Search')
-
 import requests
 import json
-
-
-TRACK_URL = 'https://api.botan.io/track'
+import telebot
+from telebot import types
+import logging
+ 
 SHORTENER_URL = 'https://api.botan.io/s/'
-
-
+TRACK_URL = 'https://api.botan.io/track'
+ 
+ 
+def make_json(msg):
+    """
+   A special method for preparing stats for Botan. Use with pyTelegramBotAPI.
+   Handles both Message and CallbackQuery objects.
+   """
+    if isinstance(msg, types.CallbackQuery):
+        try:
+            data = {}
+            data["chat"] = {}
+            # Chat.Id is in both User and GroupChat
+            data["chat"]["id"] = msg.message.chat.id
+            return json.dumps(data)
+        except Exception as ex:
+            logging.error("Exception of type {ex_type!s} in botan_s make_json (call): {ex_reason!s}".format(ex_type=type(ex), ex_reason=str(ex)))
+    if isinstance(msg, types.Message):
+        try:
+            if msg is None:
+                return None
+            data = {}
+            data["chat"] = {}
+            # Chat.Id is in both User and GroupChat
+            data["chat"]["id"] = msg.chat.id
+            return json.dumps(data)
+        except Exception as ex:
+            logging.error("Exception of type {ex_type!s} in botan_s make_json (message): {ex_reason!s}".format(ex_type=type(ex), ex_reason=str(ex)))
+   
+   
+ 
+       
 def track(token, uid, message, name='Message'):
     try:
         r = requests.post(
             TRACK_URL,
             params={"token": token, "uid": uid, "name": name},
-            data=json.dumps(message),
+            data=make_json(message),
             headers={'Content-type': 'application/json'},
         )
         return r.json()
@@ -31,12 +53,12 @@ def track(token, uid, message, name='Message'):
         # catastrophic error
         print(e)
         return False
-
-
+       
+       
 def shorten_url(url, botan_token, user_id):
     """
-    Shorten URL for specified user of a bot
-    """
+   Shorten URL for specified user of a bot
+   """
     try:
         return requests.get(SHORTENER_URL, params={
             'token': botan_token,
