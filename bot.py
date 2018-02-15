@@ -62,14 +62,16 @@ keyboard_layout = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True, resi
 for func in func_list:
     keyboard_layout.add(func)
 
+videos_layout = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
+for vid in list(manuals.keys()):
+    videos_layout.add(vid)
+
 start_msg = 'Чем я могу помочь?'
 
 # global last_message
 last_message = ''
 
-@bot.message_handler(commands=['cat'])
-def send_cat(message):
-    bot.send_photo(message.chat.id, get(url='http://random.cat/meow').json()['file'] , reply_markup = keyboard_layout)
+
 
 def nearest_service(location):
     min_dist = 10000000
@@ -102,6 +104,10 @@ def manual_nearest_service(lat, lng):
 @bot.message_handler(commands=["start", 'menu'])
 def dial_start(message):
     bot.send_message(message.chat.id, start_msg, reply_markup = keyboard_layout)
+
+@bot.message_handler(commands=['cat'])
+def send_cat(message):
+    bot.send_photo(message.chat.id, get(url='http://random.cat/meow').json()['file'] , reply_markup = keyboard_layout)    
     
 
 @bot.message_handler(content_types=['text', 'location'])
@@ -122,14 +128,14 @@ def response(message):
         bot.send_message(message.chat.id, geo_request, reply_markup=markup)   
         last_message = geo_request
     elif message.text == 'Видеоинструкции':
-        markup = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
-        button_man_ton = telebot.types.KeyboardButton(text="Автоматический тонометр")
-        button_man_ing = telebot.types.KeyboardButton(text="Компрессорный ингалятор")
-        button_man_therm = telebot.types.KeyboardButton(text="Электронный термометр")
-        markup.add(button_man_ton)
-        markup.add(button_man_ing)
-        markup.add(button_man_therm)
-        bot.send_message(message.chat.id, manual_request, reply_markup=markup)   
+        # markup = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
+        # button_man_ton = telebot.types.KeyboardButton(text="Автоматический тонометр")
+        # button_man_ing = telebot.types.KeyboardButton(text="Компрессорный ингалятор")
+        # button_man_therm = telebot.types.KeyboardButton(text="Электронный термометр")
+        # markup.add(button_man_ton)
+        # markup.add(button_man_ing)
+        # markup.add(button_man_therm)
+        bot.send_message(message.chat.id, manual_request, reply_markup=videos_layout)   
         last_message = manual_request
     elif message.text in manuals:
         bot.send_message(message.chat.id, manuals[message.text], reply_markup = keyboard_layout)
