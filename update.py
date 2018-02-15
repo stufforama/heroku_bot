@@ -50,6 +50,6 @@ data['end'] = pd.to_numeric(data['end'])
 data['url'] = data['url'].apply(lambda x: 'http://' + urllib.parse.quote(x.rsplit('//')[1]))
 data.drop(['text'], axis=1, inplace = True)
 
-data.to_csv('doclist.csv', sep=";")
+data.to_csv('doclist.csv', sep=";",encoding = 'utf8')
 
 
