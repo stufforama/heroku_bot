@@ -68,7 +68,7 @@ start_msg = 'Чем я могу помочь?'
 last_message = ''
 
 @bot.message_handler(commands=['cat'])
-def send_cat():
+def send_cat(message):
     bot.send_photo(message.chat.id, get(url='http://random.cat/meow').json()['file'] , reply_markup = keyboard_layout)
 
 def nearest_service(location):
