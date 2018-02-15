@@ -4,13 +4,15 @@
 # In[2]:
 
 print('importing')
-import numpy as np
+# import numpy as np
+from math import hypot
 import pandas as pd
+from requests import get
 import re
-import urllib
+# import urllib
 import telebot
 import googlemaps
-# from config import token
+from config import manuals
 import os
 from flask import Flask, request
 
@@ -21,16 +23,16 @@ API_KEY = os.environ.get('API_KEY')
 
 #информация о свидетельствах
 print('loadind certificates')
-data = pd.read_csv('doclist.csv', delimiter= ";", header=None, encoding = 'utf8')
-data.columns = ['text', 'url']
-pattern = '-[0-9]{3,4}'
-data['sku'] = data['text'].apply(lambda x: re.findall(string=x, pattern = pattern)[0].rsplit('-')[1])
-data.loc[data['sku']=='911', 'sku'] = data.loc[data['sku']=='911']['text'].apply(lambda x: '911c' if len(re.findall(string=x, pattern='[cC]+'))>0 else x)
-data['start'] = data['text'].apply(lambda x: re.findall(string=x, pattern = '[0-9]{6,}')[0])
-data['end'] = data['text'].apply(lambda x: re.findall(string=x, pattern = '[0-9]{6,}')[1])
-data['start'] = pd.to_numeric(data['start'])
-data['end'] = pd.to_numeric(data['end'])
-data['url'] = data['url'].apply(lambda x: 'http://' + urllib.parse.quote(x.rsplit('//')[1]))
+data = pd.read_csv('doclist.csv', delimiter= ";", encoding = 'utf8')
+# data.columns = ['text', 'url']
+# pattern = '-[0-9]{3,4}'
+# data['sku'] = data['text'].apply(lambda x: re.findall(string=x, pattern = pattern)[0].rsplit('-')[1])
+# data.loc[data['sku']=='911', 'sku'] = data.loc[data['sku']=='911']['text'].apply(lambda x: '911c' if len(re.findall(string=x, pattern='[cC]+'))>0 else x)
+# data['start'] = data['text'].apply(lambda x: re.findall(string=x, pattern = '[0-9]{6,}')[0])
+# data['end'] = data['text'].apply(lambda x: re.findall(string=x, pattern = '[0-9]{6,}')[1])
+# data['start'] = pd.to_numeric(data['start'])
+# data['end'] = pd.to_numeric(data['end'])
+# data['url'] = data['url'].apply(lambda x: 'http://' + urllib.parse.quote(x.rsplit('//')[1]))
 
 #информация о сервисных центрах
 print('loadind service centeres')
@@ -40,10 +42,8 @@ services['workhours'].fillna('', inplace = True)
 useful_cols = ['city', 'type', 'address1', 'address2', 'tel', 'workhours']
 
 #словарь видеоинструкций
-print('loadind manuals list')
-manuals = {'Автоматический тонометр':'https://youtu.be/nTWcDJGSiwo', 
-           'Компрессорный ингалятор':'https://youtu.be/JY1urhMFnTg',
-           'Электронный термометр': 'https://youtu.be/iA6yIxAYawE'}
+# print('loadind manuals list')
+
 
 #googlemaps
 print('loadind gmaps')
@@ -67,16 +67,16 @@ start_msg = 'Чем я могу помочь?'
 # global last_message
 last_message = ''
 
-# @bot.message_handler(commands=['start'])
-# def start(message):
-#     bot.reply_to(message, 'Hello, ' + message.from_user.first_name)
+@bot.message_handler(commands=['cat'])
+def send_cat():
+    bot.send_photo(message.chat.id, get(url='http://random.cat/meow').json()['file'] , reply_markup = keyboard_layout)
 
 def nearest_service(location):
     min_dist = 10000000
     nearest_sc = ''
     sc_description = ''
     for index in range(services.shape[0]):
-        distance = np.sqrt((location.latitude-services.lat[index])**2 + (location.longitude-services.lng[index])**2)
+        distance = hypot((location.latitude-services.lat[index]),(location.longitude-services.lng[index]))
         if distance < min_dist:
             min_dist = distance
             nearest_sc = index
@@ -90,7 +90,7 @@ def manual_nearest_service(lat, lng):
     nearest_sc = ''
     sc_description = ''
     for index in range(services.shape[0]):
-        distance = np.sqrt((lat-services.lat[index])**2 + (lng-services.lng[index])**2)
+        distance = hypot((lat-services.lat[index]), (lng-services.lng[index]))
         if distance < min_dist:
             min_dist = distance
             nearest_sc = index
