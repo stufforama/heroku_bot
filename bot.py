@@ -18,6 +18,7 @@ from flask import Flask, request
 
 token = os.environ.get('TOKEN')
 API_KEY = os.environ.get('API_KEY')
+BOTAN_KEY = os.environ.get('BOTAN_KEY')
 
 # In[ ]:
 
@@ -104,10 +105,12 @@ def manual_nearest_service(lat, lng):
 @bot.message_handler(commands=["start", 'menu'])
 def dial_start(message):
     bot.send_message(message.chat.id, start_msg, reply_markup = keyboard_layout)
+    botan.track(BOTAN_KEY, message.chat.id, message, 'Старт или меню')
 
 @bot.message_handler(commands=['cat'])
 def send_cat(message):
     bot.send_photo(message.chat.id, get(url='http://random.cat/meow').json()['file'] , reply_markup = keyboard_layout)    
+    botan.track(BOTAN_KEY, message.chat.id, message, 'Котик')
     
 
 @bot.message_handler(content_types=['text', 'location'])
@@ -120,12 +123,14 @@ def response(message):
     if message.text == 'Информация о поверке':
         markup = telebot.types.ForceReply(selective=False)
         bot.send_message(message.chat.id, sn_request, reply_markup=markup)
+        botan.track(BOTAN_KEY, message.chat.id, message, 'Поверка')
         last_message = sn_request
     elif message.text == 'Ближайший сервисный центр':
         markup = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
         button_geo = telebot.types.KeyboardButton(text="Определить автоматически", request_location=True)
         markup.add(button_geo)
-        bot.send_message(message.chat.id, geo_request, reply_markup=markup)   
+        bot.send_message(message.chat.id, geo_request, reply_markup=markup) 
+        botan.track(BOTAN_KEY, message.chat.id, message, 'Сервис')  
         last_message = geo_request
     elif message.text == 'Видеоинструкции':
         # markup = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
@@ -135,10 +140,12 @@ def response(message):
         # markup.add(button_man_ton)
         # markup.add(button_man_ing)
         # markup.add(button_man_therm)
-        bot.send_message(message.chat.id, manual_request, reply_markup=videos_layout)   
+        bot.send_message(message.chat.id, manual_request, reply_markup=videos_layout) 
+        botan.track(BOTAN_KEY, message.chat.id, message, 'Видео')  
         last_message = manual_request
     elif message.text in manuals:
         bot.send_message(message.chat.id, manuals[message.text], reply_markup = keyboard_layout)
+        botan.track(BOTAN_KEY, message.chat.id, message, 'Видео ' + message.text)
         last_message = manuals[message.text]
     elif message.reply_to_message != None:
         if (message.reply_to_message.text == sn_request) | (message.reply_to_message.text == check_sn):
