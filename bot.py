@@ -64,9 +64,11 @@ keyboard_layout = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True, resi
 for func in func_list:
     keyboard_layout.add(func)
 
+
 videos_layout = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
 for vid in list(manuals.keys()):
     videos_layout.add(vid)
+videos_layout.add('Отмена')
 
 start_msg = 'Чем я могу помочь?'
 
@@ -169,12 +171,12 @@ def response(message):
                 markup = telebot.types.ForceReply(selective=False)
                 bot.send_message(message.chat.id, response, reply_markup = markup)
             last_message = response
-    elif message.location != None:
-        nearest_sc_longitude, nearest_sc_latitude, nearest_sc_descr = nearest_service(message.location)
-        bot.send_message(message.chat.id, nearest_sc_descr)
-        bot.send_location(message.chat.id, longitude=nearest_sc_longitude, latitude=nearest_sc_latitude,  reply_markup=keyboard_layout)
-        last_message = nearest_sc_descr       
-    elif (last_message == geo_request) & (message.location == None):
+    # elif message.location != None:
+    #     nearest_sc_longitude, nearest_sc_latitude, nearest_sc_descr = nearest_service(message.location)
+    #     bot.send_message(message.chat.id, nearest_sc_descr)
+    #     bot.send_location(message.chat.id, longitude=nearest_sc_longitude, latitude=nearest_sc_latitude,  reply_markup=keyboard_layout)
+    #     last_message = nearest_sc_descr       
+    elif message.text == 'Ближайший сервисный центр'
         try:
             manual_location = message.text
             geocode = gmaps.geocode(manual_location)
@@ -186,10 +188,16 @@ def response(message):
             last_message = nearest_sc_descr
         except IndexError:
             markup = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
-            button_geo = telebot.types.KeyboardButton(text="Определить автоматически", request_location=True)
+            button_geo = telebot.types.KeyboardButton(text="Отмена", request_location=True)
             markup.add(button_geo)
             bot.send_message(message.chat.id, geo_request, reply_markup=markup)   
             last_message = geo_request
+    elif message.text == 'Отмена'
+        bot.send_message(message.chat.id, start_msg, reply_markup = keyboard_layout)
+        botan.track(BOTAN_KEY, message.chat.id, message, 'Старт или меню')
+    # else:
+    #     bot.send_message(message.chat.id, start_msg, reply_markup = keyboard_layout)        
+
             
 
 @server.route('/' + token, methods=['POST'])
