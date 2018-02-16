@@ -116,6 +116,7 @@ def response(message):
         markup = telebot.types.InlineKeyboardButton()
         cancel_button = telebot.types.InlineKeyboardButton(text="Отмена", callback_data="Отмена")
         markup.add(cancel_button)
+        bot.send_message(message.chat.id, '', reply_markup=markup)
         botan.track(BOTAN_KEY, message.chat.id, message, 'Сервис')  
     elif message.text == 'Видеоинструкции':
         bot.send_message(message.chat.id, manual_request, reply_markup=videos_layout) 
