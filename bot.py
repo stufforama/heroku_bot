@@ -130,7 +130,7 @@ def response(message):
         last_message = sn_request
     elif message.text == 'Ближайший сервисный центр':
         markup = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
-        button_geo = telebot.types.KeyboardButton(text="Отмена", request_location=True)
+        button_geo = telebot.types.KeyboardButton(text="Отмена", request_location=False)
         markup.add(button_geo)
         bot.send_message(message.chat.id, geo_request, reply_markup=markup) 
         botan.track(BOTAN_KEY, message.chat.id, message, 'Сервис')  
