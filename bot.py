@@ -101,17 +101,21 @@ def response(message):
     check_sn = 'Проверьте правильность ввода'
     manual_request = 'Выберите интересующую категорию'
     check_geo = 'Проверьте правильность адреса и попробуйте ещё'
+
     if message.text == 'Информация о поверке':
         markup = telebot.types.ForceReply(selective=False)
         bot.send_message(message.chat.id, sn_request, reply_markup=markup)
         botan.track(BOTAN_KEY, message.chat.id, message, 'Поверка')
     elif message.text == 'Ближайший сервисный центр':
-        markup = telebot.types.InlineKeyboardMarkup()
+        markup = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
         button_geo = telebot.types.KeyboardButton(text="Отмена", request_location=False)
         markup.add(button_geo)
         # cancel_button = telebot.types.InlineKeyboardButton(text="Отмена", callback_data="Отмена")
         # markup.add(cancel_button)
         bot.send_message(message.chat.id, geo_request, reply_markup=markup) 
+        markup = telebot.types.InlineKeyboardButton()
+        cancel_button = telebot.types.InlineKeyboardButton(text="Отмена", callback_data="Отмена")
+        markup.add(cancel_button)
         botan.track(BOTAN_KEY, message.chat.id, message, 'Сервис')  
     elif message.text == 'Видеоинструкции':
         bot.send_message(message.chat.id, manual_request, reply_markup=videos_layout) 
@@ -160,7 +164,12 @@ def response(message):
     # else:
     #     bot.send_message(message.chat.id, start_msg, reply_markup = keyboard_layout)        
 
-            
+@bot.callback_query_handler(func=lambda call: True)
+def callback_inline(call):
+    # Если сообщение из чата с ботом
+    if call.message:
+        if call.data == "Отмена":
+            bot.send_message(message.chat.id, start_msg, reply_markup = keyboard_layout)             
 
 @server.route('/' + token, methods=['POST'])
 def get_message():
