@@ -108,7 +108,7 @@ def response(message):
         markup = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
         button_geo = telebot.types.KeyboardButton(text="Отмена", request_location=False)
         markup.add(button_geo)
-        cancel_button = types.InlineKeyboardButton(text="Отмена", callback_data="Отмена")
+        cancel_button = telebot.types.InlineKeyboardButton(text="Отмена", callback_data="Отмена")
         markup.add(cancel_button)
         bot.send_message(message.chat.id, geo_request, reply_markup=markup) 
         botan.track(BOTAN_KEY, message.chat.id, message, 'Сервис')  
