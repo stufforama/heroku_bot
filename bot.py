@@ -99,15 +99,16 @@ def response(message):
     geo_request = 'Пожалуйста, укажите свой город и адрес'
     sn_request = 'Введите серийный номер в формате [Модель][пробел][Серийный номер]'
     check_sn = 'Проверьте правильность ввода'
-    manual_request = 'Выберите интересующую катеорию'
+    manual_request = 'Выберите интересующую категорию'
+    check_geo = 'Проверьте правильность адреса и попробуйте ещё'
     if message.text == 'Информация о поверке':
         markup = telebot.types.ForceReply(selective=False)
         bot.send_message(message.chat.id, sn_request, reply_markup=markup)
         botan.track(BOTAN_KEY, message.chat.id, message, 'Поверка')
     elif message.text == 'Ближайший сервисный центр':
-        markup = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
-        button_geo = telebot.types.KeyboardButton(text="Отмена", request_location=False)
-        markup.add(button_geo)
+        markup = telebot.types.InlineKeyboardMarkup()
+        # button_geo = telebot.types.KeyboardButton(text="Отмена", request_location=False)
+        # markup.add(button_geo)
         cancel_button = telebot.types.InlineKeyboardButton(text="Отмена", callback_data="Отмена")
         markup.add(cancel_button)
         bot.send_message(message.chat.id, geo_request, reply_markup=markup) 
@@ -138,20 +139,24 @@ def response(message):
                 response = check_sn
                 markup = telebot.types.ForceReply(selective=False)
                 bot.send_message(message.chat.id, response, reply_markup = markup)
+        elif (message.reply_to_message.text == geo_request) | (message.reply_to_message.text == check_geo):
+            try:
+                manual_location = message.text
+                geocode = gmaps.geocode(manual_location)
+                manual_lat = geocode[0]['geometry']['location']['lat']
+                manual_lng = geocode[0]['geometry']['location']['lng']
+                nearest_sc_longitude, nearest_sc_latitude, nearest_sc_descr = manual_nearest_service(manual_lat, manual_lng)
+                bot.send_message(message.chat.id, nearest_sc_descr)
+                bot.send_location(message.chat.id, longitude=nearest_sc_longitude, latitude=nearest_sc_latitude,  reply_markup=keyboard_layout)
+            except IndexError:
+                cancel_button = telebot.types.InlineKeyboardButton(text="Отмена", callback_data="Отмена")
+                markup.add(cancel_button)
+                bot.send_message(message.chat.id, check_geo, reply_markup = markup)
     elif message.text == 'Отмена':
         bot.send_message(message.chat.id, start_msg, reply_markup = keyboard_layout)
         botan.track(BOTAN_KEY, message.chat.id, message, 'Старт или меню')     
     else:
-        try:
-            manual_location = message.text
-            geocode = gmaps.geocode(manual_location)
-            manual_lat = geocode[0]['geometry']['location']['lat']
-            manual_lng = geocode[0]['geometry']['location']['lng']
-            nearest_sc_longitude, nearest_sc_latitude, nearest_sc_descr = manual_nearest_service(manual_lat, manual_lng)
-            bot.send_message(message.chat.id, nearest_sc_descr)
-            bot.send_location(message.chat.id, longitude=nearest_sc_longitude, latitude=nearest_sc_latitude,  reply_markup=keyboard_layout)
-        except IndexError:
-            bot.send_message(message.chat.id, start_msg, reply_markup = keyboard_layout)
+        bot.send_message(message.chat.id, start_msg, reply_markup = keyboard_layout)
 
     # else:
     #     bot.send_message(message.chat.id, start_msg, reply_markup = keyboard_layout)        
