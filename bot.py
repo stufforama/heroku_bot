@@ -17,8 +17,6 @@ token = os.environ.get('TOKEN')
 API_KEY = os.environ.get('API_KEY')
 BOTAN_KEY = os.environ.get('BOTAN_KEY')
 
-# In[ ]:
-
 #информация о свидетельствах
 print('loadind certificates')
 data = pd.read_csv('doclist.csv', delimiter= ";", encoding = 'utf8')
@@ -29,7 +27,6 @@ services = pd.read_csv('service.csv', encoding='utf8', index_col=0)
 services.drop(['geocode', 'address'], axis=1,inplace=True)
 services['workhours'].fillna('', inplace = True)
 useful_cols = ['city', 'type', 'address1', 'address2', 'tel', 'workhours']
-
 
 #googlemaps
 print('loadind gmaps')
@@ -108,10 +105,6 @@ def response(message):
         botan.track(BOTAN_KEY, message.chat.id, message, 'Поверка')
     elif message.text == 'Ближайший сервисный центр':
         markup = telebot.types.ForceReply(selective=False)
-        # button_geo = telebot.types.KeyboardButton(text="Отмена", request_location=False)
-        # markup.add(button_geo)
-        # cancel_button = telebot.types.InlineKeyboardButton(text="Отмена", callback_data="Отмена")
-        # markup.add(cancel_button)
         bot.send_message(message.chat.id, geo_request, reply_markup=markup) 
         markup = telebot.types.InlineKeyboardMarkup()
         cancel_button = telebot.types.InlineKeyboardButton(text="Меню", callback_data="Отмена")
@@ -143,6 +136,10 @@ def response(message):
                 response = check_sn
                 markup = telebot.types.ForceReply(selective=False)
                 bot.send_message(message.chat.id, response, reply_markup = markup)
+                markup = telebot.types.InlineKeyboardMarkup()
+                cancel_button = telebot.types.InlineKeyboardButton(text="Меню", callback_data="Отмена")
+                markup.add(cancel_button)
+                bot.send_message(message.chat.id, 'Вернуться в меню', reply_markup=markup)
         elif (message.reply_to_message.text == geo_request) | (message.reply_to_message.text == check_geo):
             try:
                 manual_location = message.text
@@ -153,17 +150,16 @@ def response(message):
                 bot.send_message(message.chat.id, nearest_sc_descr)
                 bot.send_location(message.chat.id, longitude=nearest_sc_longitude, latitude=nearest_sc_latitude,  reply_markup=keyboard_layout)
             except IndexError:
-                # cancel_button = telebot.types.InlineKeyboardButton(text="Отмена", callback_data="Отмена")
-                # markup.add(cancel_button)
                 bot.send_message(message.chat.id, check_geo)
+                markup = telebot.types.InlineKeyboardMarkup()
+                cancel_button = telebot.types.InlineKeyboardButton(text="Меню", callback_data="Отмена")
+                markup.add(cancel_button)
+                bot.send_message(message.chat.id, 'Вернуться в меню', reply_markup=markup)
     elif message.text == 'Отмена':
         bot.send_message(message.chat.id, start_msg, reply_markup = keyboard_layout)
         botan.track(BOTAN_KEY, message.chat.id, message, 'Старт или меню')     
     else:
-        bot.send_message(message.chat.id, start_msg, reply_markup = keyboard_layout)
-
-    # else:
-    #     bot.send_message(message.chat.id, start_msg, reply_markup = keyboard_layout)        
+        bot.send_message(message.chat.id, start_msg, reply_markup = keyboard_layout)       
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
