@@ -107,9 +107,9 @@ def response(message):
         bot.send_message(message.chat.id, sn_request, reply_markup=markup)
         botan.track(BOTAN_KEY, message.chat.id, message, 'Поверка')
     elif message.text == 'Ближайший сервисный центр':
-        markup = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
-        button_geo = telebot.types.KeyboardButton(text="Отмена", request_location=False)
-        markup.add(button_geo)
+        markup = telebot.types.ForceReply(selective=False)
+        # button_geo = telebot.types.KeyboardButton(text="Отмена", request_location=False)
+        # markup.add(button_geo)
         # cancel_button = telebot.types.InlineKeyboardButton(text="Отмена", callback_data="Отмена")
         # markup.add(cancel_button)
         bot.send_message(message.chat.id, geo_request, reply_markup=markup) 
