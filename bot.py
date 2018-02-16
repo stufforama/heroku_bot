@@ -107,13 +107,12 @@ def response(message):
         botan.track(BOTAN_KEY, message.chat.id, message, 'Поверка')
     elif message.text == 'Ближайший сервисный центр':
         markup = telebot.types.InlineKeyboardMarkup()
-        # button_geo = telebot.types.KeyboardButton(text="Отмена", request_location=False)
-        # markup.add(button_geo)
-        cancel_button = telebot.types.InlineKeyboardButton(text="Отмена", callback_data="Отмена")
-        markup.add(cancel_button)
+        button_geo = telebot.types.KeyboardButton(text="Отмена", request_location=False)
+        markup.add(button_geo)
+        # cancel_button = telebot.types.InlineKeyboardButton(text="Отмена", callback_data="Отмена")
+        # markup.add(cancel_button)
         bot.send_message(message.chat.id, geo_request, reply_markup=markup) 
         botan.track(BOTAN_KEY, message.chat.id, message, 'Сервис')  
-
     elif message.text == 'Видеоинструкции':
         bot.send_message(message.chat.id, manual_request, reply_markup=videos_layout) 
         botan.track(BOTAN_KEY, message.chat.id, message, 'Видео')  
@@ -149,9 +148,9 @@ def response(message):
                 bot.send_message(message.chat.id, nearest_sc_descr)
                 bot.send_location(message.chat.id, longitude=nearest_sc_longitude, latitude=nearest_sc_latitude,  reply_markup=keyboard_layout)
             except IndexError:
-                cancel_button = telebot.types.InlineKeyboardButton(text="Отмена", callback_data="Отмена")
-                markup.add(cancel_button)
-                bot.send_message(message.chat.id, check_geo, reply_markup = markup)
+                # cancel_button = telebot.types.InlineKeyboardButton(text="Отмена", callback_data="Отмена")
+                # markup.add(cancel_button)
+                bot.send_message(message.chat.id, check_geo)
     elif message.text == 'Отмена':
         bot.send_message(message.chat.id, start_msg, reply_markup = keyboard_layout)
         botan.track(BOTAN_KEY, message.chat.id, message, 'Старт или меню')     
