@@ -176,7 +176,7 @@ def response(message):
     #     bot.send_message(message.chat.id, nearest_sc_descr)
     #     bot.send_location(message.chat.id, longitude=nearest_sc_longitude, latitude=nearest_sc_latitude,  reply_markup=keyboard_layout)
     #     last_message = nearest_sc_descr       
-    elif message.text == 'Ближайший сервисный центр'
+    elif message.text == 'Ближайший сервисный центр':
         try:
             manual_location = message.text
             geocode = gmaps.geocode(manual_location)
@@ -192,7 +192,7 @@ def response(message):
             markup.add(button_geo)
             bot.send_message(message.chat.id, geo_request, reply_markup=markup)   
             last_message = geo_request
-    elif message.text == 'Отмена'
+    elif message.text == 'Отмена':
         bot.send_message(message.chat.id, start_msg, reply_markup = keyboard_layout)
         botan.track(BOTAN_KEY, message.chat.id, message, 'Старт или меню')
     # else:
