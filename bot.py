@@ -170,7 +170,7 @@ def callback_inline(call):
     # Если сообщение из чата с ботом
     if call.message:
         if call.data == "Отмена":
-            bot.send_message(message.chat.id, start_msg, reply_markup = keyboard_layout)             
+            bot.send_message(call.message.chat.id, start_msg, reply_markup = keyboard_layout)             
 
 @server.route('/' + token, methods=['POST'])
 def get_message():
