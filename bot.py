@@ -113,7 +113,7 @@ def response(message):
         # cancel_button = telebot.types.InlineKeyboardButton(text="Отмена", callback_data="Отмена")
         # markup.add(cancel_button)
         bot.send_message(message.chat.id, geo_request, reply_markup=markup) 
-        markup = telebot.types.InlineKeyboardButton()
+        markup = telebot.types.InlineKeyboardMarkup()
         cancel_button = telebot.types.InlineKeyboardButton(text="Меню", callback_data="Отмена")
         markup.add(cancel_button)
         bot.send_message(message.chat.id, 'Вернуться в меню', reply_markup=markup)
