@@ -59,7 +59,7 @@ def get_news():
 news = get_news()
 news_msg = ''
 for key in sorted(news, reverse=True)[:3]:
-    news_msg += """:page_facing_up:{}.{}.{}\n{}\n[Подробнее]({})\n\n""".format(key.day, key.month, key.year, news[key][0], news[key][1])
+    news_msg += """📄{}.{}.{}\n{}\n[Подробнее]({})\n\n""".format(key.day, key.month, key.year, news[key][0], news[key][1])
 
 #инициализируем бота
 print('Running bot')
