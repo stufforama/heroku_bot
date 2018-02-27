@@ -6,3 +6,4 @@ flask==0.12
 requests
 lxml
 datetime
+cssselect
