@@ -59,7 +59,7 @@ def get_news():
 news = get_news()
 news_msg = ''
 for key in sorted(news, reverse=True)[:3]:
-    news_msg += '{}.{}.{}\n{}\n[Подробнее]({})\n\n'.format(key.day, key.month, key.year, news[key][0], news[key][1])
+    news_msg += """:page_facing_up:{}.{}.{}\n{}\n[Подробнее]({})\n\n""".format(key.day, key.month, key.year, news[key][0], news[key][1])
 
 #инициализируем бота
 print('Running bot')
@@ -137,7 +137,7 @@ def response(message):
         bot.send_message(message.chat.id, manuals[message.text], reply_markup = keyboard_layout, parse_mode = 'Markdown')
         botan.track(BOTAN_KEY, message.chat.id, message, 'Видео ' + message.text)
     elif message.text == 'Свежие новости':
-        bot.send_message(message.chat.id, news_msg, reply_markup=videos_layout, parse_mode = 'Markdown') 
+        bot.send_message(message.chat.id, news_msg, reply_markup=keyboard_layout, parse_mode = 'Markdown') 
         botan.track(BOTAN_KEY, message.chat.id, message, 'Новости')     
     elif message.reply_to_message != None:
         if (message.reply_to_message.text == sn_request) | (message.reply_to_message.text == check_sn):
