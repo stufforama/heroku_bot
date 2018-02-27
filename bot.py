@@ -1,4 +1,4 @@
-﻿
+
 # coding: utf-8
 
 print('importing')
@@ -12,6 +12,13 @@ from config import manuals
 import os
 from flask import Flask, request
 import botan
+from lxml.html import fromstring
+from lxml import cssselect
+from datetime import datetime
+
+
+
+
 
 token = os.environ.get('TOKEN')
 API_KEY = os.environ.get('API_KEY')
@@ -32,6 +39,28 @@ useful_cols = ['city', 'type', 'address1', 'address2', 'tel', 'workhours']
 print('loadind gmaps')
 gmaps = googlemaps.Client(key=API_KEY)
 
+print('loading news')
+def get_news():
+    url_template = 'http://www.and-rus.ru/press/news/year/{}'
+    news_headers = []
+    news_dates = []
+    news_urls = []
+    year = datetime.now().year
+    for i in range(2):
+        dom = fromstring(requests.get(url_template.format(year-i)).text)
+        dom.make_links_absolute('http://and-rus.ru')
+        news_headers += [dom.cssselect('.news_header a')[i].text for i in range(len(dom.cssselect('.news_header a')))]
+        news_urls += [dom.cssselect('.news_header a')[i].get('href') for i in range(len(dom.cssselect('.news_header a')))]
+        news_dates += [datetime.strptime(dom.cssselect('.news_date')[i].text,'%d.%m.%Y') for i in range(len(dom.cssselect('.news_date')))]
+    
+    news = dict(zip(news_dates, zip(news_headers, news_urls)))
+    return news
+
+news = get_news()
+news_msg = ''
+for key in sorted(news, reverse=True)[:3]:
+    news_msg += '{}.{}.{}\n{}\n[Подробнее]({})\n\n'.format(key.day, key.month, key.year, news[key][0], news[key][1])
+
 #инициализируем бота
 print('Running bot')
 bot = telebot.TeleBot(token)
@@ -39,7 +68,7 @@ bot = telebot.TeleBot(token)
 server = Flask(__name__)
 
 
-func_list = ['Информация о поверке', 'Ближайший сервисный центр', 'Видеоинструкции']
+func_list = ['Свежие новости','Информация о поверке', 'Ближайший сервисный центр', 'Видеоинструкции']
 keyboard_layout = telebot.types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
 for func in func_list:
     keyboard_layout.add(func)
@@ -52,20 +81,6 @@ videos_layout.add('Отмена')
 
 start_msg = 'Чем я могу помочь?'
 
-
-def nearest_service(location):
-    min_dist = 10000000
-    nearest_sc = ''
-    sc_description = ''
-    for index in range(services.shape[0]):
-        distance = hypot((location.latitude-services.lat[index]),(location.longitude-services.lng[index]))
-        if distance < min_dist:
-            min_dist = distance
-            nearest_sc = index
-    sc_longitude = services['lng'].loc[nearest_sc]
-    sc_latitude = services['lat'].loc[nearest_sc]
-    sc_description = '\n'.join(list(services[useful_cols].loc[nearest_sc]))
-    return sc_longitude, sc_latitude, sc_description    
 
 def manual_nearest_service(lat, lng):
     min_dist = 10000000
@@ -121,6 +136,9 @@ def response(message):
     elif message.text in manuals:
         bot.send_message(message.chat.id, manuals[message.text], reply_markup = keyboard_layout, parse_mode = 'Markdown')
         botan.track(BOTAN_KEY, message.chat.id, message, 'Видео ' + message.text)
+    elif message.text == 'Свежие новости':
+        bot.send_message(message.chat.id, news_msg, reply_markup=videos_layout, parse_mode = 'Markdown') 
+        botan.track(BOTAN_KEY, message.chat.id, message, 'Новости')     
     elif message.reply_to_message != None:
         if (message.reply_to_message.text == sn_request) | (message.reply_to_message.text == check_sn):
             try:
