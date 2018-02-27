@@ -1,3 +1,3 @@
-﻿manuals = {'Автоматический тонометр':'[Для просмотра щелкните на картинку:arrow_down::arrow_down::arrow_down:](https://youtu.be/nTWcDJGSiwo)', 
-           'Компрессорный ингалятор':'[Для просмотра щелкните на картинку:arrow_down::arrow_down::arrow_down:](https://youtu.be/JY1urhMFnTg)',
-           'Электронный термометр': '[Для просмотра щелкните на картинку:arrow_down::arrow_down::arrow_down:](https://youtu.be/iA6yIxAYawE)'}
+﻿manuals = {'Автоматический тонометр':'[Для просмотра щелкните на картинку](https://youtu.be/nTWcDJGSiwo) :arrow_down::arrow_down::arrow_down:', 
+           'Компрессорный ингалятор':'[Для просмотра щелкните на картинку](https://youtu.be/JY1urhMFnTg) :arrow_down::arrow_down::arrow_down:',
+           'Электронный термометр': '[Для просмотра щелкните на картинку](https://youtu.be/iA6yIxAYawE) :arrow_down::arrow_down::arrow_down:'}
