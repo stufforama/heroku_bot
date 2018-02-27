@@ -119,7 +119,7 @@ def response(message):
         bot.send_message(message.chat.id, manual_request, reply_markup=videos_layout) 
         botan.track(BOTAN_KEY, message.chat.id, message, 'Видео')  
     elif message.text in manuals:
-        bot.send_message(message.chat.id, manuals[message.text], reply_markup = keyboard_layout)
+        bot.send_message(message.chat.id, manuals[message.text], reply_markup = keyboard_layout, parse_mode = 'Markdown')
         botan.track(BOTAN_KEY, message.chat.id, message, 'Видео ' + message.text)
     elif message.reply_to_message != None:
         if (message.reply_to_message.text == sn_request) | (message.reply_to_message.text == check_sn):
