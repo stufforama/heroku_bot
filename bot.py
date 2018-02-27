@@ -47,7 +47,7 @@ def get_news():
     news_urls = []
     year = datetime.now().year
     for i in range(2):
-        dom = fromstring(requests.get(url_template.format(year-i)).text)
+        dom = fromstring(get(url_template.format(year-i)).text)
         dom.make_links_absolute('http://and-rus.ru')
         news_headers += [dom.cssselect('.news_header a')[i].text for i in range(len(dom.cssselect('.news_header a')))]
         news_urls += [dom.cssselect('.news_header a')[i].get('href') for i in range(len(dom.cssselect('.news_header a')))]
