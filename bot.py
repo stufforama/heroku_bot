@@ -103,7 +103,7 @@ def dial_start(message):
 
 @bot.message_handler(commands=['cat'])
 def send_cat(message):
-    bot.send_photo(message.chat.id, get(url='http://random.cat/meow').json()['file'] , reply_markup = keyboard_layout)    
+    bot.send_photo(message.chat.id, get(url='http://aws.random.cat/meow').json()['file'] , reply_markup = keyboard_layout)    
     botan.track(BOTAN_KEY, message.chat.id, message, 'Котик')
     
 @bot.message_handler(content_types=['text'])
