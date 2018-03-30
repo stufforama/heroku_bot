@@ -3,7 +3,7 @@
 
 # In[ ]:
 
-import requests
+from requests import get
 from lxml.html import fromstring
 from lxml import cssselect
 import urllib
@@ -28,7 +28,7 @@ def get_certs():
     text = ''
     for url in urls:
         try:
-            html = requests.get(url).text
+            html = get(url).text
             dom = fromstring(html)
             dom.make_links_absolute(url)
             css_elements = dom.cssselect('.menu-left')
