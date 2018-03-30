@@ -51,7 +51,7 @@ def get_certs():
     data['url'] = data['url'].apply(lambda x: 'http://' + urllib.parse.quote(x.rsplit('//')[1]))
     data.drop(['text'], axis=1, inplace = True)
     return data
-
-# data.to_csv('doclist.csv', sep=";",encoding = 'utf8')
+data = get_certs()
+data.to_csv('doclist.csv', sep=";",encoding = 'utf8')
 
 
