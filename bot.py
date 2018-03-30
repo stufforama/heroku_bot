@@ -15,8 +15,10 @@ import botan
 from lxml.html import fromstring
 from lxml import cssselect
 from datetime import datetime
-# import urllib
-# from io import StringIO
+import urllib
+from io import StringIO
+from update import get_certs
+
 
 
 
@@ -27,7 +29,8 @@ BOTAN_KEY = os.environ.get('BOTAN_KEY')
 
 #информация о свидетельствах
 print('loadind certificates')
-data = pd.read_csv('doclist.csv', delimiter= ";", encoding = 'utf8')
+# data = pd.read_csv('doclist.csv', delimiter= ";", encoding = 'utf8')
+data = get_certs()
 
 #информация о сервисных центрах
 print('loadind service centeres')
